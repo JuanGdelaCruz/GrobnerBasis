@@ -24,10 +24,10 @@ namespace GröbnerBasis.PolynomialRings
         }
 
 
-        public Term(double real,int[] power, Ring ring) : this(power, ring) => Coefficient = real;
-        public Term(long integer,int[] power, Ring ring) : this(power, ring) => Coefficient = integer;
-        public Term(Complex complex,int[] power, Ring ring) : this(power, ring) => Coefficient = complex;
-        public Term(Rational rational,int[] power, Ring ring) : this(power, ring) => Coefficient = rational;
+        public Term(double real, int[] power, Ring ring) : this(power, ring) => Coefficient = real;
+        public Term(long integer, int[] power, Ring ring) : this(power, ring) => Coefficient = integer;
+        public Term(Complex complex, int[] power, Ring ring) : this(power, ring) => Coefficient = complex;
+        public Term(Rational rational, int[] power, Ring ring) : this(power, ring) => Coefficient = rational;
         private Term(int[] power, Ring ring) => (PowerProduct, this.ring) = (power, ring);
 
 
@@ -39,7 +39,7 @@ namespace GröbnerBasis.PolynomialRings
 
         public override string ToString()
         {
-            
+
             string temp = Coefficient.ToString();
             string power = "";
             for (int i = 0; i < PowerProduct.Length; i++)
@@ -66,9 +66,9 @@ namespace GröbnerBasis.PolynomialRings
 
         }
 
-        public static Term operator +(Term a,Term b)
+        public static Term operator +(Term a, Term b)
         {
-            if (!a.Equals(b) || a.ring!= b.ring)
+            if (!a.Equals(b) || a.ring != b.ring)
                 throw new ArithmeticException();
             return new Term(a.Coefficient + b.Coefficient, a.PowerProduct, a.ring);
 
@@ -103,11 +103,28 @@ namespace GröbnerBasis.PolynomialRings
             return term;
         }
 
-        public Term Clone(Polynomial owner)
+        public static Term operator /(Term dividend, Term divisor)
         {
-            return new Term(Coefficient,(int[])PowerProduct.Clone(), ring);
+            if (divisor.ring != dividend.ring)
+                throw new ArithmeticException();
+            int[] pp = new int[dividend.PowerProduct.Length];
+
+            for (int i = 0; i < pp.Length; i++)
+            {
+                pp[i] = dividend.PowerProduct[i] - divisor.PowerProduct[i];
+            }
+
+            return new Term(dividend.Coefficient / divisor.Coefficient, pp, dividend.ring);
         }
 
-       
+
+
+
+        public Term Clone(Polynomial owner)
+        {
+            return new Term(Coefficient, (int[])PowerProduct.Clone(), ring);
+        }
+
+
     }
 }

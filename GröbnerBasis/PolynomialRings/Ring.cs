@@ -46,11 +46,11 @@ namespace GröbnerBasis.PolynomialRings
 
                     //CHECK if bottleneck: Using a dictionary for the quotients might improve performance.
                     int index = Array.IndexOf(divisors, first);
-                    var partialQuotient = DivideTerms(h.LeadingTerm(), divisors[index].LeadingTerm());
+                    var partialQuotient = h.LeadingTerm() / divisors[index].LeadingTerm();
                     quotients[index].AddTerm(partialQuotient);
                     foreach (Term term in divisors[index].Terms)
                     {
-                        var subtract =-1* partialQuotient *  term;
+                        var subtract = -1 * partialQuotient * term;
                         h.AddTerm(subtract);
                     }
 
@@ -88,23 +88,23 @@ namespace GröbnerBasis.PolynomialRings
             // L / lt(f)
             {
 
-                Term div = DivideTerms(lcm, f.LeadingTerm());
+                Term div = lcm / f.LeadingTerm();
                 // L / lt(f) *f
                 foreach (Term term in f.Terms)
                 {
-                    var add = div*term;
+                    var add = div * term;
                     s.AddTerm(add);
                 }
             }
             //-L / lt(g) * g
             {
                 // L / lt(g)
-                Term div = DivideTerms(lcm, g.LeadingTerm());
+                Term div = lcm / g.LeadingTerm();
                 // - L / lt(g) * g
                 foreach (Term term in g.Terms)
                 {
-                    var sub = div * (-1*term);                    
-                   
+                    var sub = div * (-1 * term);
+
                     s.AddTerm(sub);
                 }
             }
@@ -126,21 +126,9 @@ namespace GröbnerBasis.PolynomialRings
         }
 
 
-        private Term DivideTerms(Term dividend, Term divisor)
-        {
-            if (divisor.PowerProduct.Length != dividend.PowerProduct.Length)
-                throw new ArithmeticException();
-            int[] pp = new int[dividend.PowerProduct.Length];
 
-            for (int i = 0; i < pp.Length; i++)
-            {
-                pp[i] = dividend.PowerProduct[i] - divisor.PowerProduct[i];
-            }
 
-            return new Term(dividend.Coefficient / divisor.Coefficient, pp, this);
-        }
 
-    
 
     }
 }
