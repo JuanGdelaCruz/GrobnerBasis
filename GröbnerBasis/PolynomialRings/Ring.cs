@@ -7,6 +7,7 @@ using System.Threading.Tasks;
 
 namespace GröbnerBasis.PolynomialRings
 {
+
     public class Ring
     {
 
@@ -14,6 +15,8 @@ namespace GröbnerBasis.PolynomialRings
         public Dictionary<string, int> VariableStringToIndex { get; private set; } = new Dictionary<string, int>();
 
         public Dictionary<int, int> VariableOrder { get; private set; } = new Dictionary<int, int>();
+
+        public readonly Field field;
 
         public int Dimension { get; private set; }
 

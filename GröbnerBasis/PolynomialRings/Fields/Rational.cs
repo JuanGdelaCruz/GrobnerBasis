@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 
 namespace GröbnerBasis.PolynomialRings.Fields
 {
+
     public struct Rational
     {
 

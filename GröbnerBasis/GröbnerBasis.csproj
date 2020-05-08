@@ -47,6 +47,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Parser\Parser.cs" />
+    <Compile Include="PolynomialRings\Fields\Field.cs" />
     <Compile Include="PolynomialRings\Fields\Rational.cs" />
     <Compile Include="PolynomialRings\Ideal.cs" />
     <Compile Include="PolynomialRings\Order\GradeLexicographical.cs" />
