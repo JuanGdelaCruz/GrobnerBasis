@@ -7,7 +7,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "GrobnerBasis", "GrobnerBasi
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Coloring", "E:\Bibliotecas\Descargas\automatic-graph-layout-master\Editing\Coloring.csproj", "{2E68A550-16EC-4E12-B4FA-0AF8789D8731}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Tester", "Tester\Tester.csproj", "{A407F5C3-D554-4A97-9640-E73CB5C6E1C8}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Tester", "Tester\Tester.csproj", "{A407F5C3-D554-4A97-9640-E73CB5C6E1C8}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
