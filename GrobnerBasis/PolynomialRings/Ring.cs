@@ -16,13 +16,13 @@ namespace GröbnerBasis.PolynomialRings
 
         public Dictionary<int, int> VariableOrder { get; private set; } = new Dictionary<int, int>();
 
-        //TODO: Right now its a dummie, boy better give it some functionality.
         public readonly Field field;
 
         public int Dimension { get; private set; }
 
-        public Ring(string[] vars)
+        public Ring(Field field,string[] vars)
         {
+            this.field = field;
             Dimension = vars.Length;
             for (int i = 0; i < vars.Length; i++)
             {
@@ -45,6 +45,8 @@ namespace GröbnerBasis.PolynomialRings
             {
 
                 var first = divisors.FirstOrDefault(f_i => f_i.Divides(h));
+                //Console.WriteLine("FIRST:" + first);
+                //Console.WriteLine("H:" + h);
                 if (first != null)
                 {
 
@@ -55,6 +57,8 @@ namespace GröbnerBasis.PolynomialRings
                     foreach (Term term in divisors[index].Terms)
                     {
                         var subtract = -1 * partialQuotient * term;
+                        //Console.WriteLine("subtract: " + subtract);
+
                         h.AddTerm(subtract);
                     }
 
@@ -63,8 +67,7 @@ namespace GröbnerBasis.PolynomialRings
                 {
                     var clone = h.LeadingTerm().Clone(remainder);
                     remainder.AddTerm(clone);
-                    var subtract = h.LeadingTerm().Clone(h);
-                    subtract.Coefficient *= -1;
+                    var subtract = h.LeadingTerm() *-1;
                     h.AddTerm(subtract);
                 }
 
@@ -86,6 +89,8 @@ namespace GröbnerBasis.PolynomialRings
 
         public Polynomial SPolynomial(Polynomial f, Polynomial g)
         {
+            //Console.WriteLine("S-polynomial of " + f + " and " + g);
+
             //S(f,g)= L/lt(f) * f - L/lt(g) *g   with L = lcm(lp(f),lp(g)).
             Polynomial s = new Polynomial(this);
             Term lcm = LCM(f.LeadingTerm(), g.LeadingTerm());

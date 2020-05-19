@@ -25,21 +25,37 @@ namespace GröbnerBasis.PolynomialRings
             var combinations = G.SelectMany((x, i) => G.Skip(i + 1), (x, y) => Tuple.Create(x, y)).ToList();
             while (combinations.Count != 0)
             {
+                //Console.WriteLine("---------------------------------");
+
                 var tuple = combinations.First();
                 combinations.Remove(tuple);
                 var sPol = ring.SPolynomial(tuple.Item1, tuple.Item2);
                 var division = ring.Divide(sPol, G.ToArray());
                 Polynomial remainder = division.Item2;
 
+
                 if (!remainder.IsZero())
                 {
+                    //Console.WriteLine("the remainder of " + sPol + " divided by");
+                    //foreach (Polynomial p in G.ToArray())
+                    //    Console.WriteLine(p);
+                    //Console.WriteLine("is " + remainder);
+                    //Console.WriteLine("with quotients:");
+                    //foreach (Polynomial p in division.Item1)
+                    //    Console.WriteLine(p);
+                    var newCombinations = G.Select(x => Tuple.Create(x, remainder));
+                    //foreach (Tuple<Polynomial,Polynomial> p in newCombinations)
+                    //    Console.WriteLine(p);
+                    combinations.AddRange(newCombinations);
+
                     G.Add(remainder);
 
-                    combinations = G.SelectMany((x, i) => G.Skip(i + 1), (x, y) => Tuple.Create(x, y)).ToList();
-
                 }
+                //Console.WriteLine("---------------------------------");
+
             }
 
+            Console.WriteLine("END");
             G.ForEach(p => p.ReduceCoefficients());
             return G.ToArray();
         }

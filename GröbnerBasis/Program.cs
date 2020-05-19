@@ -11,8 +11,8 @@ namespace GröbnerBasis
         {
 
             Ring r = new Ring(new string[] { "x", "y" });
-            r.FixOrder(new string[] { "y", "x" });
 
+            r.FixOrder(new string[] { "y", "x" });
 
 
             Polynomial f1 = new Polynomial(r);
@@ -30,12 +30,26 @@ namespace GröbnerBasis
 
             Ideal I = new Ideal(new Polynomial[] { f1, f2, f3 }, r);
 
+            Console.WriteLine("__________Gröbner Basis__________________");
             var gb = I.GröbnerBasis();
             foreach (var p in gb)
                 Console.WriteLine(p);
 
+            Console.WriteLine("_________Minimal Gröbner Basis___________________");
+
+            var minimal = I.MinimalGröbnerBasis();
+            foreach (var p in minimal)
+                Console.WriteLine(p);
+
+            Console.WriteLine("______________Reduced Gröbner Basis______________");
 
 
+            var reduced = I.ReducedGrobnerBasis();
+            foreach (var p in reduced)
+                Console.WriteLine(p);
+
+            Console.WriteLine("__________Membership__________________");
+            Console.WriteLine(I.Member(f1));
             Console.Read();
 
         }
