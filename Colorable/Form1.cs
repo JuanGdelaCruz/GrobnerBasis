@@ -1,15 +1,25 @@
 ﻿using System;
-using System.IO;
 using System.Windows.Forms;
 using Microsoft.Msagl.Drawing;
 using Color = Microsoft.Msagl.Drawing.Color;
 using Node = Microsoft.Msagl.Drawing.Node;
 using Shape = Microsoft.Msagl.Drawing.Shape;
+using GröbnerBasis.PolynomialRings;
+using System.Linq;
+using System.Collections.Generic;
+using System.Numerics;
+using GröbnerBasis.PolynomialRings.Order;
+using GröbnerBasis.PolynomialRings.Fields;
+using System.ComponentModel;
+using System.Threading;
+using System.Threading.Tasks;
 
 namespace Editing
 {
     public partial class Form1 : Form
     {
+
+        private CancellationTokenSource _cts;
 
         public Form1()
         {
@@ -24,122 +34,188 @@ namespace Editing
             CreateGraph();
             graphEditor.Viewer.NeedToCalculateLayout = false;
             SuspendLayout();
-
+       
             graphEditor.Viewer.LayoutAlgorithmSettingsButtonVisible = false;
-
-            tableLayoutPanel1.Controls.Add(graphEditor, 0, 0);
+            splitContainer1.Panel1.Controls.Add(graphEditor);
             graphEditor.Dock = DockStyle.Fill;
             ResumeLayout();
 
         }
 
 
-
-
-        void CreateGraph()
+        private void CreateGraph()
         {
             var g = new Graph();
 
-            // First DNA sequence
-            g.AddEdge("prom1A", "rbs1A");
-            g.AddEdge("rbs1A", "pcr1A");
-            g.AddEdge("pcr1A", "rbs2A");
-            g.AddEdge("rbs2A", "pcr2A");
-            g.AddEdge("pcr2A", "ter1A");
-            g.AddEdge("ter1A", "prom2A");
-            g.AddEdge("prom2A", "rbs3A");
-            g.AddEdge("rbs3A", "pcr3A");
-            g.AddEdge("pcr3A", "ter2A");
-            g.AddEdge("ter2A", "prom3A");
-            g.AddEdge("prom3A", "rbs4A");
-            g.AddEdge("rbs4A", "pcr4A");
-            g.AddEdge("pcr4A", "ter3A");
-
-            // Second DNA sequence
-            g.AddEdge("prom1B", "rbs1B");
-            g.AddEdge("rbs1B", "pcr1B");
-            g.AddEdge("pcr1B", "ter1B");
-            g.AddEdge("ter1B", "prom2B");
-            g.AddEdge("prom2B", "rbs2B");
-            g.AddEdge("rbs2B", "pcr2B");
-            g.AddEdge("pcr2B", "rbs3B");
-            g.AddEdge("rbs3B", "pcr3B");
-            g.AddEdge("pcr3B", "ter2B");
-
-            // Protein coding
-            g.AddEdge("pcr1A", "prot_Q2b");
-            g.AddEdge("pcr2A", "prot_Q1a");
-            g.AddEdge("pcr3A", "prot_A");
-            g.AddEdge("pcr4A", "prot_ccdB");
-            g.AddEdge("pcr1B", "prot_ccdB");
-            g.AddEdge("pcr2B", "prot_Q1b");
-            g.AddEdge("pcr3B", "prot_Q2a");
-
-            // Regulation
-            g.AddEdge("prot_Q2b-H2", "prom2A");
-            g.AddEdge("prot_H1-Q1b", "prom1B");
-
-            // Reactions
-            g.AddEdge("prot_Q2b", "r1");
-            g.AddEdge("prot_H2", "r1");
-            g.AddEdge("r1", "prot_Q2b-H2");
-            g.AddEdge("prot_Q2b-H2", "r2");
-            g.AddEdge("r2", "prot_H2");
-            g.AddEdge("r2", "prot_Q2b");
-            g.AddEdge("prot_H1", "r3");
-            g.AddEdge("prot_Q1a", "r4");
-            g.AddEdge("r4", "prot_H1");
-            g.AddEdge("prot_H1", "r5");
-            g.AddEdge("prot_Q1a", "r6");
-            g.AddEdge("prot_ccdB", "r6");
-            g.AddEdge("prot_H2", "r7");
-            g.AddEdge("prot_H2", "r8");
-            g.AddEdge("prot_Q2a", "r9");
-            g.AddEdge("r9", "prot_H2");
-            g.AddEdge("r10", "prot_H1");
-            g.AddEdge("r10", "prot_Q1b");
-            g.AddEdge("prot_H1-Q1b", "r10");
-            g.AddEdge("prot_A", "r11");
-            g.AddEdge("prot_ccdB", "r11");
-            g.AddEdge("prot_Q1b", "r12");
-            g.AddEdge("prot_H1", "r12");
-            g.AddEdge("r12", "prot_H1-Q1b");
-            g.AddEdge("prot_Q2a", "r13");
-            g.AddEdge("prot_ccdB", "r13");
-
-
-            // Set DNA sequences to be one above the other
-            g.LayerConstraints.AddUpDownConstraint(Dn(g, "prom1A"), Dn(g, "prom1B"));
-
-            // Set DNA sequence 1 to be in a row
-            g.LayerConstraints.AddSameLayerNeighbors(Dn(g, "prom1A"), Dn(g, "rbs1A"), Dn(g, "pcr1A"), Dn(g, "rbs2A"), Dn(g, "pcr2A"), Dn(g, "ter1A"),
-                Dn(g, "prom2A"), Dn(g, "rbs3A"), Dn(g, "pcr3A"), Dn(g, "ter2A"), Dn(g, "prom3A"), Dn(g, "rbs4A"), Dn(g, "pcr4A"), Dn(g, "ter3A"));
-
-            // Set DNA sequence 2 to be in a row
-            g.LayerConstraints.AddSameLayerNeighbors(Dn(g, "prom1B"), Dn(g, "rbs1B"), Dn(g, "pcr1B"), Dn(g, "ter1B"), Dn(g, "prom2B"), Dn(g, "rbs2B"),
-                Dn(g, "pcr2B"), Dn(g, "rbs3B"), Dn(g, "pcr3B"), Dn(g, "ter2B"));
-
-            // Set proteins to be below their pcr
-            g.LayerConstraints.AddSequenceOfUpDownVerticalConstraint(Dn(g, "pcr1A"), Dn(g, "prot_Q2b"), Dn(g, "prot_A"), Dn(g, "prot_ccdB"));
-            g.LayerConstraints.AddUpDownVerticalConstraint(Dn(g, "pcr2A"), Dn(g, "prot_Q1a"));
-            g.LayerConstraints.AddUpDownConstraint(Dn(g, "pcr3A"), Dn(g, "prot_A"));
-            g.LayerConstraints.AddUpDownConstraint(Dn(g, "pcr4A"), Dn(g, "prot_ccdB"));
-            g.LayerConstraints.AddUpDownConstraint(Dn(g, "pcr1B"), Dn(g, "prot_ccdB"));
-            g.LayerConstraints.AddUpDownConstraint(Dn(g, "pcr2B"), Dn(g, "prot_Q1b"));
-            g.LayerConstraints.AddUpDownConstraint(Dn(g, "pcr3B"), Dn(g, "prot_Q2a"));
-            /////////////////
-
-
+            //Default graph
+            g.AddEdge("x1", "x2").Attr.ArrowheadAtTarget = ArrowStyle.None;
+            g.AddEdge("x1", "x5").Attr.ArrowheadAtTarget = ArrowStyle.None;
+            g.AddEdge("x1", "x6").Attr.ArrowheadAtTarget = ArrowStyle.None;
+            g.AddEdge("x2", "x8").Attr.ArrowheadAtTarget = ArrowStyle.None;
+            g.AddEdge("x2", "x3").Attr.ArrowheadAtTarget = ArrowStyle.None;
+            g.AddEdge("x2", "x4").Attr.ArrowheadAtTarget = ArrowStyle.None;
+            g.AddEdge("x3", "x8").Attr.ArrowheadAtTarget = ArrowStyle.None;
+            g.AddEdge("x3", "x4").Attr.ArrowheadAtTarget = ArrowStyle.None;
+            g.AddEdge("x4", "x5").Attr.ArrowheadAtTarget = ArrowStyle.None;
+            g.AddEdge("x4", "x7").Attr.ArrowheadAtTarget = ArrowStyle.None;
+            g.AddEdge("x5", "x7").Attr.ArrowheadAtTarget = ArrowStyle.None;
+            g.AddEdge("x5", "x6").Attr.ArrowheadAtTarget = ArrowStyle.None;
+            g.AddEdge("x6", "x7").Attr.ArrowheadAtTarget = ArrowStyle.None;
+            g.AddEdge("x7", "x8").Attr.ArrowheadAtTarget = ArrowStyle.None;
 
             graphEditor.Graph = g;
 
         }
 
-        static Node Dn(Graph g, string s)
+
+
+
+        private async void CheckButton_Click(object sender, EventArgs e)
         {
-            return g.FindNode(s);
+            textBox2.Text = "";
+            textBox3.Text = "";
+
+            _cts = new CancellationTokenSource();
+            var token = _cts.Token;
+            int k = (int)numericUpDown1.Value;
+            progressBar1.Visible = true;
+            CheckButton.Visible = false;
+            cancel.Visible = true;
+
+            var progressHandler = new Progress<int>(value =>
+            {
+                progressBar1.Value = value;
+            });
+
+            var progress = progressHandler as IProgress<string>;
+            try
+            {
+                var result = await Task.Run(() =>
+                {
+                    return Check(k,token, progressHandler);                    
+                 });
+                foreach (Polynomial p in result.Item1)
+                    textBox2.Text += p.ToString() + "\r\n";
+
+                foreach (Polynomial p in result.Item2)
+                    textBox3.Text += p.ToString() + "\r\n";
+                textBox1.Text = (result.Item3 ? "The graph is " + k + "-colorable." : "The graph is not " + k + "-colorable.");
+
+            }
+            catch (OperationCanceledException)
+            {
+                MessageBox.Show("Cancelled.");
+               
+            }
+            progressBar1.Visible = false;
+            cancel.Visible = false;
+            CheckButton.Visible = true;
+
         }
 
+
+
+        private  Tuple<Polynomial[],Polynomial [],bool> Check(int k,CancellationToken token,IProgress<int> progress)
+        {
+            var graph = graphEditor.Graph;
+            var variables = graph.Nodes.Select(x => x.Label.Text).ToArray();
+            foreach (String s in variables)
+                Console.WriteLine(s);
+            Ring ring = new Ring(Field.Real, variables);
+            ring.FixOrder(variables);
+
+            List<Polynomial> generator = new List<Polynomial>();
+            List<Node> nodes = graph.Nodes.ToList();
+
+            float currentProgress = 0;
+            for (int i = 0; i < nodes.Count; i++)
+            {
+                int[] powerProduct = new int[graph.NodeCount];
+                powerProduct[i] = k;
+                Polynomial first = new Polynomial(ring);
+                first.AddTerm(1, powerProduct);
+                first.AddTerm(-1, new int[nodes.Count]);
+
+                generator.Add(first);
+
+                var node = nodes[i];
+                foreach (Edge edge in node.Edges)
+                {
+
+                    Polynomial second = new Polynomial(ring);
+
+                    int index = nodes.IndexOf(edge.TargetNode);
+                    if (index == i)
+                        continue;
+                    powerProduct = new int[nodes.Count];
+                    powerProduct[i] = k - 1;
+                    second.AddTerm(1, powerProduct);
+                    // xi^k−1 + xj^k−2 * xj +· · ·+xi* xj^k−2 + xj^k−1
+                    for (int j = k - 2; j > 0; j--)
+                    {
+                        powerProduct = new int[nodes.Count];
+                        powerProduct[i] = j;
+                        powerProduct[index] = k - 1 - j;
+                        second.AddTerm(1, powerProduct);
+
+                    }
+                    powerProduct = new int[nodes.Count];
+                    powerProduct[i] = 0;
+                    powerProduct[index] = k - 1;
+                    second.AddTerm(1, powerProduct);
+
+                    generator.Add(second);
+                }
+                currentProgress = i / nodes.Count *100;
+                progress.Report((int)currentProgress);
+            }
+             
+
+            Ideal ideal = new Ideal(generator.ToArray(), ring);
+            Polynomial one = new Polynomial(ring);
+            one.AddTerm(1, new int[nodes.Count]);
+            var reducedBasis = ideal.ReducedGrobnerBasis(token,progress);
+
+            return new Tuple<Polynomial[],Polynomial[],bool> (ideal.GeneratorSet,reducedBasis, !reducedBasis.Any(i => i.Equals(one)));
+        }
+
+        private void ProgressChanged(object sender, ProgressChangedEventArgs e)
+        {
+            progressBar1.Value = e.ProgressPercentage;
+        }
+        private void Completed(object sender, RunWorkerCompletedEventArgs e)
+        {
+            progressBar1.Visible = false;
+            CheckButton.Text = "Comprobar";
+
+        }
+
+        private void cancel_Click(object sender, EventArgs e)
+        {
+            if (_cts != null)
+                _cts.Cancel();
+        }
+
+        private void label1_Click(object sender, EventArgs e)
+        {
+
+        }
+
+
+        private void tableLayoutPanel1_Paint(object sender, PaintEventArgs e)
+        {
+
+        }
+
+        private void numericUpDown1_ValueChanged(object sender, EventArgs e)
+        {
+        }
+
+
+        private void label2_Click(object sender, EventArgs e)
+        {
+
+        }
         private void Form1_Load(object sender, EventArgs e)
         {
 
@@ -151,11 +227,6 @@ namespace Editing
         }
 
         private void splitContainer1_Panel1_Paint_1(object sender, PaintEventArgs e)
-        {
-
-        }
-
-        private void CheckButton_Click(object sender, EventArgs e)
         {
 
         }

@@ -74,7 +74,6 @@ namespace Editing {
             ValidateEditorDelegate = DefaultValidateEditor;
             CloseEditorDelegate = DefaultCloseEditor;
             ShowEditorDelegate(null);
-            treeImage = Image.FromFile("tree.jpg");
         }
 
         /// <summary>
@@ -656,12 +655,7 @@ namespace Editing {
 
         float radiusRatio = 0.3f;
 
-        public ICurve GetNodeBoundary(DrawingNode node) {
-            double width = treeImage.Width/2.0;
-            double height = treeImage.Height/2.0;
-
-            return CurveFactory.CreateRectangleWithRoundedCorners(width, height, width * radiusRatio, height * radiusRatio, new Point());
-        }
+      
 
         public bool DrawNode18(DrawingNode node, object graphics){
             var g = (Graphics)graphics;
