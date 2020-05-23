@@ -10,7 +10,7 @@ namespace Tester
         static void Main(string[] args)
         {
 
-            Test9();
+            Test12();
             return;
 
             Console.WriteLine("_________________TEST 0__________________________");
@@ -152,7 +152,7 @@ namespace Tester
             Console.WriteLine(I.Member(f1));
         }
 
-        //Graph with 4 nodes
+        //Graph with 8 nodes
         static void Test2()
         {
             Ring ring = new Ring(Field.Real, new string[] { "x1", "x2", "x3", "x4", "x5", "x6", "x7", "x8" });
@@ -263,7 +263,7 @@ namespace Tester
             f22.AddTerm(1, new int[] { 0, 0, 0, 0, 0, 1, 0, 1 });
             f22.AddTerm(1, new int[] { 0, 0, 0, 0, 0, 0, 0, 2 });
 
-            Ideal I = new Ideal(new Polynomial[] { f1, f2, f3, f4, f5, f6, f7, f8 ,f9,f10}, ring);
+            Ideal I = new Ideal(new Polynomial[] { f1, f2, f3, f4, f5, f6, f7, f8, f9, f10 }, ring);
             Console.WriteLine("__________Gröbner Basis__________________");
             var gb = I.GröbnerBasis();
             foreach (var p in gb)
@@ -465,19 +465,19 @@ namespace Tester
             f3.AddTerm(-1, new int[] { 0, 0, 0, 0 });
 
             Polynomial f4 = new Polynomial(r);
-            f4.AddTerm(1, new int[] { 0, 2, 0 ,0});
-            f4.AddTerm(1, new int[] { 0, 1, 1 ,0});
-            f4.AddTerm(1, new int[] { 0, 0, 2,0 });
+            f4.AddTerm(1, new int[] { 0, 2, 0, 0 });
+            f4.AddTerm(1, new int[] { 0, 1, 1, 0 });
+            f4.AddTerm(1, new int[] { 0, 0, 2, 0 });
 
             Polynomial f5 = new Polynomial(r);
-            f5.AddTerm(1, new int[] { 2, 0, 0 ,0});
-            f5.AddTerm(1, new int[] { 1, 0, 1 ,0});
-            f5.AddTerm(1, new int[] { 0, 0, 2,0 });
+            f5.AddTerm(1, new int[] { 2, 0, 0, 0 });
+            f5.AddTerm(1, new int[] { 1, 0, 1, 0 });
+            f5.AddTerm(1, new int[] { 0, 0, 2, 0 });
 
             Polynomial f6 = new Polynomial(r);
-            f6.AddTerm(1, new int[] { 2, 0, 0 ,0});
-            f6.AddTerm(1, new int[] { 1, 1, 0 ,0});
-            f6.AddTerm(1, new int[] { 0, 2, 0,0 });
+            f6.AddTerm(1, new int[] { 2, 0, 0, 0 });
+            f6.AddTerm(1, new int[] { 1, 1, 0, 0 });
+            f6.AddTerm(1, new int[] { 0, 2, 0, 0 });
 
 
 
@@ -486,12 +486,12 @@ namespace Tester
             f7.AddTerm(-1, new int[] { 0, 0, 0, 0 });
 
             Polynomial f8 = new Polynomial(r);
-            f8.AddTerm(1, new int[] { 2, 0, 0 ,0});
-            f8.AddTerm(1, new int[] { 1, 0, 0 ,1});
-            f8.AddTerm(1, new int[] { 0, 0,0,  2 });
+            f8.AddTerm(1, new int[] { 2, 0, 0, 0 });
+            f8.AddTerm(1, new int[] { 1, 0, 0, 1 });
+            f8.AddTerm(1, new int[] { 0, 0, 0, 2 });
 
 
-            Ideal I = new Ideal(new Polynomial[] { f1, f2, f3, f6, f5, f4,f7,f8 }, r);
+            Ideal I = new Ideal(new Polynomial[] { f1, f2, f3, f6, f5, f4, f7, f8 }, r);
             Console.WriteLine("__________Gröbner Basis__________________");
             var gb = I.GröbnerBasis();
             foreach (var p in gb)
@@ -569,7 +569,7 @@ namespace Tester
 
 
 
-            Ideal I = new Ideal(new Polynomial[] { f1, f2, f3, f6, f5, f4, f7, f8 ,f9}, r);
+            Ideal I = new Ideal(new Polynomial[] { f1, f2, f3, f6, f5, f4, f7, f8, f9 }, r);
             Console.WriteLine("__________Gröbner Basis__________________");
             var gb = I.GröbnerBasis();
             foreach (var p in gb)
@@ -651,7 +651,7 @@ namespace Tester
             f10.AddTerm(1, new int[] { 0, 0, 0, 2 });
 
 
-            Ideal I = new Ideal(new Polynomial[] { f1, f2, f6, f3, f9, f4, f5, f7,  f10, f8}, r);
+            Ideal I = new Ideal(new Polynomial[] { f1, f2, f6, f3, f9, f4, f5, f7, f10, f8 }, r);
 
             Console.WriteLine("__________Generator_________________");
             var sys = I.GeneratorSet;
@@ -756,7 +756,7 @@ namespace Tester
             f15.AddTerm(1, new int[] { 0, 0, 0, 0, 0, 0, 1, 1 });
             f15.AddTerm(1, new int[] { 0, 0, 0, 0, 0, 0, 0, 2 });
 
-            Ideal I = new Ideal(new Polynomial[] { f1, f2, f3, f4, f5, f6, f7, f8, f9, f10,f11,f12,f13,f14,f15 }, ring);
+            Ideal I = new Ideal(new Polynomial[] { f1, f2, f3, f4, f5, f6, f7, f8, f9, f10, f11, f12, f13, f14, f15 }, ring);
             Console.WriteLine("__________Gröbner Basis__________________");
             var gb = I.GröbnerBasis();
             foreach (var p in gb)
@@ -778,5 +778,115 @@ namespace Tester
             Console.WriteLine("__________Membership__________________");
             Console.WriteLine(I.Member(f1));
         }
+        static void Test10()
+        {
+            Ring r = new Ring(Field.Real, new string[] { "x1", "x2", "x3", "x4" });
+
+            r.FixOrder(new string[] { "x2", "x3", "x4", "x1" });
+
+            // x2*x3 -x2*x4 + x3^2 -x4^2 
+            Polynomial f1 = new Polynomial(r);
+            f1.AddTerm(1, new int[] { 0, 1, 1, 0 });
+            f1.AddTerm(-1, new int[] { 0, 1, 0, 1 });
+            f1.AddTerm(1, new int[] { 0, 0, 2, 0 });
+            f1.AddTerm(-1, new int[] { 0, 0, 0, 2 });
+
+            //x3^2 + x3*x1 + x1^2
+            Polynomial f2 = new Polynomial(r);
+            f2.AddTerm(1, new int[] { 0, 0, 2, 0 });
+            f2.AddTerm(-1, new int[] { 1, 0, 1, 0 });
+            f2.AddTerm(-1, new int[] { 1, 0, 1, 0 });
+
+            Console.WriteLine(f1 + " divided by " + f2);
+            Console.WriteLine("________________STEPS__________________");
+
+            var div = r.Divide(f1, new Polynomial[] { f2 });
+            Console.WriteLine("________________RESULT_________________");
+
+            Console.WriteLine("Remainder: " + div.Item2);
+            Console.WriteLine("Quotients:");
+
+            for (int i = 0; i < div.Item1.Length; i++)
+                Console.WriteLine(i.ToString() + ") " + div.Item1[i]);
+
+
+        }
+
+        static void Test11()
+        {
+            Ring r = new Ring(Field.Real, new string[] { "x1", "x2", "x3", "x4" });
+
+            r.FixOrder(new string[] { "x2", "x3", "x4", "x1" });
+
+            // x2*x3 -x2*x4 + x3^2 -x4^2 
+            Polynomial f1 = new Polynomial(r);
+            f1.AddTerm(1, new int[] { 0, 1, 1, 0 });
+            f1.AddTerm(-1, new int[] { 0, 1, 0, 1 });
+            f1.AddTerm(1, new int[] { 0, 0, 2, 0 });
+            f1.AddTerm(-1, new int[] { 0, 0, 0, 2 });
+
+            //x3^2 + x3*x1 + x1^2
+            Polynomial f2 = new Polynomial(r);
+            f2.AddTerm(1, new int[] { 0, 0, 2, 0 });
+            f2.AddTerm(-1, new int[] { 1, 0, 1, 0 });
+            f2.AddTerm(-1, new int[] { 1, 0, 1, 0 });
+
+            Console.WriteLine(f1 + " divided by " + f2);
+            Console.WriteLine("________________STEPS__________________");
+
+            var div = r.Divide(f1, new Polynomial[] { f2 });
+            Console.WriteLine("________________RESULT_________________");
+
+            Console.WriteLine("Remainder: " + div.Item2);
+            Console.WriteLine("Quotients:");
+
+            for (int i = 0; i < div.Item1.Length; i++)
+                Console.WriteLine(i.ToString() + ") " + div.Item1[i]);
+
+
+        }
+
+
+
+        static void Test12()
+        {
+            Ring r = new Ring(Field.Real, new string[] { "x1", "x2", "x3", "x4" });
+
+            r.FixOrder(new string[] { "x2", "x3", "x4", "x1" });
+            /*
+             * Current Dividend:-0,666666666666667x4^2*x1^4 +0,666666666666667x4^2*x1 -0,333333333333333x1^3 +0,333333333333333
+             *   Current divisor: x1^3 -1
+             *   Quotient:-0,666666666666667x4^2*x1
+             *   subtract: 0,666666666666667x4^2*x1^4
+             *   subtract: -0,666666666666667x4^2*x1
+             */
+
+            // x2*x3 -x2*x4 + x3^2 -x4^2 
+            Polynomial f1 = new Polynomial(r);
+            f1.AddTerm(-0.666666666666667, new int[] { 4, 0, 0, 2 });
+            f1.AddTerm(0.666666666666667, new int[] { 1, 0, 0, 2 });
+            f1.AddTerm(-0.333333333333333, new int[] { 3, 0, 0, 0 });
+            f1.AddTerm(0.333333333333333, new int[] { 0, 0, 0, 0 });
+
+            //x3^2 + x3*x1 + x1^2
+            Polynomial f2 = new Polynomial(r);
+            f2.AddTerm(1, new int[] { 3, 0, 0, 0 });
+            f2.AddTerm(-1, new int[] {0, 0, 0, 0 });
+
+            Console.WriteLine(f1 + " divided by " + f2);
+            Console.WriteLine("________________STEPS__________________");
+
+            var div = r.Divide(f1, new Polynomial[] { f2 });
+            Console.WriteLine("________________RESULT_________________");
+
+            Console.WriteLine("Remainder: " + div.Item2);
+            Console.WriteLine("Quotients:");
+
+            for (int i = 0; i < div.Item1.Length; i++)
+                Console.WriteLine(i.ToString() + ") " + div.Item1[i]);
+
+
+        }
     }
+
 }

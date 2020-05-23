@@ -62,7 +62,7 @@ namespace GröbnerBasis.PolynomialRings
             var c = (Complex)Coefficient;
             if (power.Length > 0 && c.Imaginary == 0 && Math.Abs(c.Real) == 1)
             {
-                coeff += (c.Real < 0 ? '-' : ' ');
+                coeff += (c.Real < 0 ? "- " : " ");
             }
             else
                 coeff = Coefficient.ToString();
@@ -140,17 +140,6 @@ namespace GröbnerBasis.PolynomialRings
         }
 
 
-        //public bool Divides(Term other) 
-        //{
-
-        //    bool divides = CompareTo(other) >= 0;
-
-        //    var pp = other.PowerProduct;
-        //    for (int i = 0; i < pp.Length; i++)
-        //        divides = divides && PowerProduct[i] <= pp[i];
-
-        //    return divides;
-        //}
 
         public Term Clone(Polynomial owner)
         {

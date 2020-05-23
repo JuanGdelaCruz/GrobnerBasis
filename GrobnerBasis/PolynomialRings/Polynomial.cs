@@ -45,13 +45,24 @@ namespace GröbnerBasis.PolynomialRings
         {
             if (term == null)
                 return;
+            var epsilon = 0.00001d;
+            if (Ring.field == Field.Real)
+            {
+                var round = Math.Round(term.Coefficient);
+                if (Math.Abs(round - term.Coefficient) <= epsilon)
+                    term.Coefficient = round;
+            }
+               
+            if (Math.Abs(term.Coefficient) <= epsilon)
+                return;
             Term contained = terms.SingleOrDefault(x => x.PowerProduct.SequenceEqual(term.PowerProduct));
             if (contained != null)
             {
                 int index = terms.IndexOf(contained);
                 terms[index]=  contained + term;
                 terms[index].owner = this;
-                if (terms[index].Coefficient == 0)
+
+                if (Math.Abs( terms[index].Coefficient) <= epsilon)
                 {
                     terms.Remove(terms[index]);
               

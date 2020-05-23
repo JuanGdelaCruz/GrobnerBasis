@@ -3,6 +3,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 
 namespace GröbnerBasis.PolynomialRings
@@ -32,7 +33,7 @@ namespace GröbnerBasis.PolynomialRings
             }
         }
 
-        public Tuple<Polynomial[], Polynomial> Divide(Polynomial dividend, Polynomial[] divisors)
+        public Tuple<Polynomial[], Polynomial> Divide(Polynomial dividend, Polynomial[] divisors,CancellationToken token = default)
         {
             //Initialization
             Polynomial remainder = new Polynomial(this);
@@ -41,12 +42,20 @@ namespace GröbnerBasis.PolynomialRings
                 quotients[i] = new Polynomial(this);
             //Begin algorithm
             Polynomial h = dividend.Clone();
+
+            //Console.WriteLine("________________________");
             while (!h.IsZero())
             {
+                if(token != CancellationToken.None &&token.IsCancellationRequested)
+                    throw new OperationCanceledException();
 
                 var first = divisors.FirstOrDefault(f_i => f_i.Divides(h));
-                //Console.WriteLine("FIRST:" + first);
-                //Console.WriteLine("H:" + h);
+
+                //Console.WriteLine("Dividend:" +h);
+                //Console.WriteLine("Divisor:" +first);
+                //Console.WriteLine("-----------------");
+
+
                 if (first != null)
                 {
 
@@ -57,11 +66,8 @@ namespace GröbnerBasis.PolynomialRings
                     foreach (Term term in divisors[index].Terms)
                     {
                         var subtract = -1 * partialQuotient * term;
-                        //Console.WriteLine("subtract: " + subtract);
-
                         h.AddTerm(subtract);
                     }
-
                 }
                 else
                 {
@@ -70,8 +76,8 @@ namespace GröbnerBasis.PolynomialRings
                     var subtract = h.LeadingTerm() *-1;
                     h.AddTerm(subtract);
                 }
-
             }
+            //Console.WriteLine("________________________");
 
             return new Tuple<Polynomial[], Polynomial>(quotients, remainder);
         }
@@ -89,7 +95,6 @@ namespace GröbnerBasis.PolynomialRings
 
         public Polynomial SPolynomial(Polynomial f, Polynomial g)
         {
-            //Console.WriteLine("S-polynomial of " + f + " and " + g);
 
             //S(f,g)= L/lt(f) * f - L/lt(g) *g   with L = lcm(lp(f),lp(g)).
             Polynomial s = new Polynomial(this);
@@ -117,6 +122,8 @@ namespace GröbnerBasis.PolynomialRings
                     s.AddTerm(sub);
                 }
             }
+            //Console.WriteLine("S-polynomial of " + f + " and " + g+ " is "+s);
+
             return s;
         }
 
