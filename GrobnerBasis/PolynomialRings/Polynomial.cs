@@ -9,9 +9,25 @@ using System.Numerics;
 
 namespace GröbnerBasis.PolynomialRings
 {
-    public class Polynomial: IEquatable<Polynomial>
-    { 
-        private readonly List<Term> terms = new List<Term>();
+    public class Polynomial : IEquatable<Polynomial>
+    {
+        private readonly List<Term> _terms = new List<Term>();
+
+        private List<Term> terms
+        {
+            get
+            {
+                if (_order != Order)
+                {
+                    _order = Order;
+                    _terms.Sort(GetComparer());
+
+                }
+                return _terms;
+            }
+        }
+
+
         public Ring Ring { get; private set; }
 
         public ReadOnlyCollection<Term> Terms
@@ -19,23 +35,13 @@ namespace GröbnerBasis.PolynomialRings
             get { return terms.AsReadOnly(); }
         }
 
-
-        private MonomialOrder _order = MonomialOrder.lex;
-      
-
-        public MonomialOrder Order
-        {
-            get => _order;
-            set
-            {
-                _order = value;
-                terms.Sort(GetComparer());
-            }
-        }
+        private MonomialOrder _order;
+        public MonomialOrder Order => Ring.Order;
 
         public Polynomial(Ring ring, Term[] terms = null)
         {
             Ring = ring;
+            _order = Order;
             if (terms != null)
                 AddTerms(terms);
         }
@@ -52,20 +58,20 @@ namespace GröbnerBasis.PolynomialRings
                 if (Math.Abs(round - term.Coefficient) <= epsilon)
                     term.Coefficient = round;
             }
-               
+
             if (Math.Abs(term.Coefficient) <= epsilon)
                 return;
             Term contained = terms.SingleOrDefault(x => x.PowerProduct.SequenceEqual(term.PowerProduct));
             if (contained != null)
             {
                 int index = terms.IndexOf(contained);
-                terms[index]=  contained + term;
+                terms[index] = contained + term;
                 terms[index].owner = this;
 
-                if (Math.Abs( terms[index].Coefficient) <= epsilon)
+                if (Math.Abs(terms[index].Coefficient) <= epsilon)
                 {
                     terms.Remove(terms[index]);
-              
+
                 }
             }
             else
@@ -90,7 +96,7 @@ namespace GröbnerBasis.PolynomialRings
         {
             dynamic value = coef;
             if (Ring.field != Field.Complex)
-              value=  CastCoefficient(coef);
+                value = CastCoefficient(coef);
             Term term = new Term(value, powerProduct, Ring);
             AddTerm(term);
         }
@@ -106,9 +112,9 @@ namespace GröbnerBasis.PolynomialRings
 
         public void AddTerms(Term[] terms) => terms.ToList().ForEach(term => AddTerm(term));
 
-        public Term LeadingTerm() => terms[0];
+        public Term LeadingTerm => terms[0];
 
-        public int[] LeadingPowerProduct() => LeadingTerm().PowerProduct;
+        public int[] LeadingPowerProduct() => LeadingTerm.PowerProduct;
 
 
 
@@ -123,9 +129,9 @@ namespace GröbnerBasis.PolynomialRings
                 return false;
 
 
-            bool divides = LeadingTerm().CompareTo(other.LeadingTerm()) >= 0;
+            bool divides = LeadingTerm.CompareTo(other.LeadingTerm) >= 0;
 
-            var pp = other.LeadingTerm().PowerProduct;
+            var pp = other.LeadingTerm.PowerProduct;
             for (int i = 0; i < pp.Length; i++)
                 divides = divides && LeadingPowerProduct()[i] <= pp[i];
 
@@ -135,17 +141,17 @@ namespace GröbnerBasis.PolynomialRings
 
         public void ReduceCoefficients()
         {
-            var coef = LeadingTerm().Coefficient;
+            var coef = LeadingTerm.Coefficient;
             foreach (Term term in terms)
             {
                 term.Coefficient /= coef;
             }
         }
-        
+
         public override string ToString()
         {
             string pstring = "";
-            for(int i =0;i < Terms.Count;i++)
+            for (int i = 0; i < Terms.Count; i++)
             {
                 if (i > 0)
                 {
@@ -159,12 +165,10 @@ namespace GröbnerBasis.PolynomialRings
 
         public Polynomial Clone()
         {
-            Polynomial copy = new Polynomial(Ring)
-            {
-                Order = Order
-            };
-            foreach (Term term in terms) 
-                      copy.AddTerm(term.Clone(copy));
+            Polynomial copy = new Polynomial(Ring);
+
+            foreach (Term term in terms)
+                copy.AddTerm(term.Clone(copy));
             return copy;
         }
 
@@ -175,8 +179,8 @@ namespace GröbnerBasis.PolynomialRings
                 default:
                     return new Lexicographical();
                 case MonomialOrder.deglex:
-                    return new GradeLexicographical();
-     
+                    return new DegreeLexicographical();
+
             }
         }
 
@@ -185,11 +189,11 @@ namespace GröbnerBasis.PolynomialRings
             return terms.SequenceEqual(other.Terms);
         }
 
-        private  dynamic CastCoefficient(dynamic coefficent)
+        private dynamic CastCoefficient(dynamic coefficent)
         {
             switch (Ring.field)
             {
-            
+
                 case Field.Integer:
                     return (long)coefficent;
                 case Field.Complex:

@@ -10,7 +10,7 @@ namespace Tester
         static void Main(string[] args)
         {
 
-            Test12();
+            Test17();
             return;
 
             Console.WriteLine("_________________TEST 0__________________________");
@@ -871,7 +871,7 @@ namespace Tester
             //x3^2 + x3*x1 + x1^2
             Polynomial f2 = new Polynomial(r);
             f2.AddTerm(1, new int[] { 3, 0, 0, 0 });
-            f2.AddTerm(-1, new int[] {0, 0, 0, 0 });
+            f2.AddTerm(-1, new int[] { 0, 0, 0, 0 });
 
             Console.WriteLine(f1 + " divided by " + f2);
             Console.WriteLine("________________STEPS__________________");
@@ -884,6 +884,191 @@ namespace Tester
 
             for (int i = 0; i < div.Item1.Length; i++)
                 Console.WriteLine(i.ToString() + ") " + div.Item1[i]);
+
+
+        }
+
+
+        //Division Test for a case in the previous test
+        static void Test13()
+        {
+            Ring r = new Ring(Field.Real, new string[] { "x", "y", "z" });
+
+            r.FixOrder(new string[] { "x", "y", "z" });
+            r.Order = MonomialOrder.deglex;
+            Polynomial f1 = new Polynomial(r);
+            f1.AddTerm(1, new int[] { 1, 0, 0 });
+            f1.AddTerm(1, new int[] { 1, 2, 0 });
+
+            Polynomial f2 = new Polynomial(r);
+            f2.AddTerm(1, new int[] { 0, 1, 1 });
+
+            Polynomial f3 = new Polynomial(r);
+            f3.AddTerm(1, new int[] { 0, 1, 0 });
+            f3.AddTerm(1, new int[] { 0, 0, 0 });
+
+
+            Polynomial f4 = new Polynomial(r);
+            f4.AddTerm(1, new int[] { 0, 0, 1 });
+            f4.AddTerm(1, new int[] { 1, 0, 0 });
+
+
+
+            Polynomial dividend = new Polynomial(r);
+            dividend.AddTerm(1, new int[] { 3, 3, 1 });
+            dividend.AddTerm(1, new int[] { 3, 2, 1 });
+            dividend.AddTerm(1, new int[] { 2, 3, 1 });
+            dividend.AddTerm(1, new int[] { 2, 2, 1 });
+
+   
+            var quotients = new Polynomial[] { f1, f2, f3, f4 };
+
+            foreach (Polynomial p in quotients)
+                Console.WriteLine(p);
+            Console.WriteLine("_----------dividend-----");
+            Console.WriteLine(dividend);
+            //                                                            f2   f3   f1   f4
+            //            var res = r.Divide(dividend, new Polynomial[] { f1, f2,   f3,  f4 });
+
+            var res = r.Divide(dividend, quotients);
+            Console.WriteLine("------------------RESULTADO---------------");
+
+            Console.WriteLine("resto:" + res.Item2);
+            Console.WriteLine("---------------------------------");
+            foreach (Polynomial p in res.Item1)
+                Console.WriteLine(p);
+
+        }
+
+        static void Test14()
+        {
+            Ring r = new Ring(Field.Real, new string[] { "x", "y", "z" });
+
+            r.FixOrder(new string[] { "z", "y", "x" });
+            r.Order = MonomialOrder.deglex;
+
+            Polynomial f1 = new Polynomial(r);
+            f1.AddTerm(1, new int[] { 1, 1, 0 });
+            f1.AddTerm(-1, new int[] { 0, 1, 0 });
+
+            Polynomial f2 = new Polynomial(r);
+            f2.AddTerm(1, new int[] { 0, 2, 0 });
+            f2.AddTerm(-1, new int[] { 1, 0, 0 });
+
+
+
+
+            Polynomial dividend = new Polynomial(r);
+            dividend.AddTerm(-1, new int[] { 1, 0, 0 });
+            dividend.AddTerm(1, new int[] { 1, 2, 0 });
+
+
+            var res = r.Divide(dividend, new Polynomial[] { f1, f2 });
+            Console.WriteLine("------------------RESULTADO---------------");
+
+            Console.WriteLine("resto:" + res.Item2);
+            Console.WriteLine("---------------------------------");
+
+
+        }
+        static void Test15()
+        {
+            Ring r = new Ring(Field.Real, new string[] { "x", "y", "z" });
+
+            r.FixOrder(new string[] { "x", "y", "z" });
+
+            Polynomial dividend = new Polynomial(r);
+            dividend.AddTerm(-1, new int[] { 0, 2, 2 });
+            dividend.AddTerm(-1, new int[] { 0, 2, 0 });
+
+            Polynomial f1 = new Polynomial(r);
+            f1.AddTerm(1, new int[] { 1, 0, 1 });
+            f1.AddTerm(-1, new int[] { 0, 1, 0 });
+
+            Polynomial f2 = new Polynomial(r);
+            f2.AddTerm(1, new int[] { 0, 1, 1 });
+            f2.AddTerm(1, new int[] { 1, 0, 0 });
+
+
+            Console.WriteLine("------------------RESULTADO---------------");
+            Console.WriteLine(r.Divide(dividend, new Polynomial[] { f1,f2 }).Item2);
+
+            Console.WriteLine("---------------------------------");
+          
+
+        }
+
+        static void Test16()
+        {
+            Ring r = new Ring(Field.Real, new string[] { "x", "y", "z" });
+            r.Order = MonomialOrder.deglex;
+
+            r.FixOrder(new string[] { "z","y","x" });
+           
+     
+            Polynomial f1 = new Polynomial(r);
+            f1.AddTerm(1, new int[] { 1, 0, 1 });
+            f1.AddTerm(1, new int[] { 0, 1, 0 });
+
+            Polynomial f2 = new Polynomial(r);
+            f2.AddTerm(-1, new int[] { 2, 1, 1 });
+            f2.AddTerm(1, new int[] { 0, 2, 0 });
+
+
+            Polynomial f3 = new Polynomial(r);
+            f3.AddTerm(1, new int[] { 1, 2, 0 });
+            f3.AddTerm(-1, new int[] { 0, 1, 0 });
+            
+            Ideal I = new Ideal(new Polynomial[] { f1, f2}, r);    
+
+            var gb = I.ReducedGrobnerBasis();
+
+            Console.WriteLine("__________Gröbner Basis__________________");
+            foreach (var p in gb)
+                Console.WriteLine(p);
+
+            Console.WriteLine("---------------------------------");
+            var lex = new DegreeLexicographical();
+            Console.WriteLine(gb[1].LeadingTerm);
+            Console.WriteLine(lex.Compare(gb[1].LeadingTerm, gb[1].Terms[1]));
+
+        }
+
+
+        static void Test17()
+        {
+            Ring r = new Ring(Field.Real, new string[] { "x", "y", "z" })
+            {
+                Order = MonomialOrder.deglex
+            };
+
+            r.FixOrder(new string[] { "z", "y", "x" });
+
+
+            Polynomial f1 = new Polynomial(r);
+            f1.AddTerm(1, new int[] { 0, 1, 0 });
+            f1.AddTerm(1, new int[] { 1, 0, 0 });
+
+            Polynomial f2 = new Polynomial(r);
+            f2.AddTerm(-1, new int[] { 1, 1, 1 });
+            f2.AddTerm(1, new int[] { 0, 1, 2 });
+
+
+            Polynomial f3 = new Polynomial(r);
+            f3.AddTerm(1, new int[] { 1, 2, 0 });
+            f3.AddTerm(-1, new int[] { 0, 1, 0 });
+
+            Ideal I = new Ideal(new Polynomial[] { f1, f2, f3}, r);
+
+            Console.WriteLine("__________Conjunto  generador__________________");
+            foreach (var p in I.GeneratorSet)
+                Console.WriteLine(p);
+            var gb = I.ReducedGrobnerBasis();
+
+            Console.WriteLine("__________Gröbner Basis__________________");
+            foreach (var p in gb)
+                Console.WriteLine(p);
+
 
 
         }

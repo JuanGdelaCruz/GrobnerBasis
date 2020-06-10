@@ -11,8 +11,6 @@ namespace GröbnerBasis.PolynomialRings
         private Ring ring;
 
 
-
-
         public Ideal(Polynomial[] generator, Ring ring)
         {
             GeneratorSet = generator;
@@ -31,26 +29,27 @@ namespace GröbnerBasis.PolynomialRings
 
             while (combinations.Count != 0)
             {
+
                 if (progress != null)
                 {
                     var value = (int) ((double)combinationsProcessed / totalCombinations* 100);
                     if (value > 100) value = 100;
                     progress.Report(value);
                     combinationsProcessed++;
-                    Console.WriteLine(combinationsProcessed +"/"+totalCombinations);
                 }
                 if (token != CancellationToken.None && token.IsCancellationRequested)
                     throw new OperationCanceledException();
-
                 var tuple = combinations.First();
                 combinations.Remove(tuple);
+              
                 var sPol = ring.SPolynomial(tuple.Item1, tuple.Item2);
                 var division = ring.Divide(sPol, G.ToArray(),token);
                 Polynomial remainder = division.Item2;
-
                 if (!remainder.IsZero())
                 {
                     var newCombinations = G.Select(x => Tuple.Create(x, remainder));
+                   
+
                     combinations.AddRange(newCombinations);
                     G.Add(remainder);
 
@@ -59,7 +58,7 @@ namespace GröbnerBasis.PolynomialRings
             }
 
             G.ForEach(p => p.ReduceCoefficients());
-            return G.ToArray();
+                     return G.ToArray();
         }
 
         public Polynomial[] MinimalGröbnerBasis(CancellationToken token = default, IProgress<int> progress = null)

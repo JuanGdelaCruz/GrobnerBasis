@@ -78,7 +78,7 @@ namespace GröbnerBasis.PolynomialRings
             switch (owner.Order)
             {
                 case MonomialOrder.deglex:
-                    comparer = new GradeLexicographical();
+                    comparer = new DegreeLexicographical();
                     break;
                 default:
                     comparer = new Lexicographical();

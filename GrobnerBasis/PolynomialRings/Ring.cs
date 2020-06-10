@@ -1,4 +1,5 @@
 ﻿using GröbnerBasis.PolynomialRings.Fields;
+using GröbnerBasis.PolynomialRings.Order;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -18,6 +19,8 @@ namespace GröbnerBasis.PolynomialRings
         public Dictionary<int, int> VariableOrder { get; private set; } = new Dictionary<int, int>();
 
         public readonly Field field;
+
+        public MonomialOrder Order = MonomialOrder.lex;
 
         public int Dimension { get; private set; }
 
@@ -43,42 +46,39 @@ namespace GröbnerBasis.PolynomialRings
             //Begin algorithm
             Polynomial h = dividend.Clone();
 
-            //Console.WriteLine("________________________");
             while (!h.IsZero())
             {
                 if(token != CancellationToken.None &&token.IsCancellationRequested)
                     throw new OperationCanceledException();
 
                 var first = divisors.FirstOrDefault(f_i => f_i.Divides(h));
-
-                //Console.WriteLine("Dividend:" +h);
-                //Console.WriteLine("Divisor:" +first);
-                //Console.WriteLine("-----------------");
-
+           
 
                 if (first != null)
                 {
 
                     //CHECK if bottleneck: Using a dictionary for the quotients might improve performance.
                     int index = Array.IndexOf(divisors, first);
-                    var partialQuotient = h.LeadingTerm() / divisors[index].LeadingTerm();
+                    var partialQuotient = h.LeadingTerm/ divisors[index].LeadingTerm;
                     quotients[index].AddTerm(partialQuotient);
+
                     foreach (Term term in divisors[index].Terms)
                     {
                         var subtract = -1 * partialQuotient * term;
                         h.AddTerm(subtract);
                     }
+
                 }
                 else
                 {
-                    var clone = h.LeadingTerm().Clone(remainder);
+                    var clone = h.LeadingTerm.Clone(remainder);
                     remainder.AddTerm(clone);
-                    var subtract = h.LeadingTerm() *-1;
+                    var subtract = h.LeadingTerm*-1;
                     h.AddTerm(subtract);
+             
+
                 }
             }
-            //Console.WriteLine("________________________");
-
             return new Tuple<Polynomial[], Polynomial>(quotients, remainder);
         }
 
@@ -98,11 +98,11 @@ namespace GröbnerBasis.PolynomialRings
 
             //S(f,g)= L/lt(f) * f - L/lt(g) *g   with L = lcm(lp(f),lp(g)).
             Polynomial s = new Polynomial(this);
-            Term lcm = LCM(f.LeadingTerm(), g.LeadingTerm());
+            Term lcm = LCM(f.LeadingTerm, g.LeadingTerm);
             // L / lt(f)
             {
 
-                Term div = lcm / f.LeadingTerm();
+                Term div = lcm / f.LeadingTerm;
                 // L / lt(f) *f
                 foreach (Term term in f.Terms)
                 {
@@ -113,7 +113,7 @@ namespace GröbnerBasis.PolynomialRings
             //-L / lt(g) * g
             {
                 // L / lt(g)
-                Term div = lcm / g.LeadingTerm();
+                Term div = lcm / g.LeadingTerm;
                 // - L / lt(g) * g
                 foreach (Term term in g.Terms)
                 {
@@ -122,7 +122,6 @@ namespace GröbnerBasis.PolynomialRings
                     s.AddTerm(sub);
                 }
             }
-            //Console.WriteLine("S-polynomial of " + f + " and " + g+ " is "+s);
 
             return s;
         }

@@ -5,7 +5,7 @@ using System.Linq;
 
 namespace GröbnerBasis.PolynomialRings.Order
 {
-    public class GradeLexicographical : IComparer<Term>
+    public class DegreeLexicographical : IComparer<Term>
     {
         public int Compare(Term first, Term second)
         {
