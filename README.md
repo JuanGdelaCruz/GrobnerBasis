@@ -1,6 +1,6 @@
 # General description
 Library for computing Gröbner Basis in .NET using Buchberger´s algorithm. Includes sample application that checks if a given graph is k-colorable using the API.
-Developed for my bachelor´s project. (see http://oa.upm.es/63155/ ).
+Developed for my bachelor´s project (see http://oa.upm.es/63155/ ).
 
 # Usage example
 Given a polynomial ring in R with two variables, named *x* and *y*, that is *R[x,y]*.
