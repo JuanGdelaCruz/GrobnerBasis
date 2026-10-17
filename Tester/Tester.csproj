@@ -2,13 +2,11 @@
 
   <PropertyGroup>
     <OutputType>Exe</OutputType>
-    <TargetFramework>netcoreapp3.1</TargetFramework>
+    <TargetFramework>net10.0</TargetFramework>
   </PropertyGroup>
 
   <ItemGroup>
-    <Reference Include="GrobnerBasis">
-      <HintPath>..\GrobnerBasis\bin\Debug\netstandard2.0\GrobnerBasis.dll</HintPath>
-    </Reference>
+    <ProjectReference Include="..\GrobnerBasis\GrobnerBasis.csproj" />
   </ItemGroup>
 
 </Project>

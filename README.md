@@ -2,6 +2,37 @@
 Library for computing Gröbner Basis in .NET using Buchberger´s algorithm. Includes sample application that checks if a given graph is k-colorable using the API.
 Developed for my bachelor´s project (see http://oa.upm.es/63155/ ).
 
+# Build and run
+
+Install the [.NET 10 SDK](https://dotnet.microsoft.com/download/dotnet/10.0).
+On Ubuntu 26.04, it is available from the Ubuntu repositories:
+
+```bash
+sudo apt update
+sudo apt install dotnet-sdk-10.0
+```
+
+From the repository root, build the library and console examples on Linux,
+macOS, or Windows:
+
+```bash
+dotnet build GrobnerBasis.Core.slnf
+dotnet run --project Tester/Tester.csproj
+```
+
+`Tester` targets .NET 10 and currently runs the `Test17` example, printing its
+generators and reduced Gröbner basis. It is an example runner, not an automated
+test suite. Its project reference builds the library automatically.
+
+The library targets both `net10.0` and `netstandard2.0`. The latter preserves
+compatibility with existing consumers, including the Windows Forms demo.
+
+The full `GrobnerBasis.sln` also contains the legacy `Colorable` Windows Forms
+application, which targets .NET Framework 4.7.2 and requires Windows tooling.
+Its project still contains machine-specific library and external MSAGL project
+references that need to be configured before building it. Use
+`GrobnerBasis.Core.slnf` for the cross-platform library and console build.
+
 # Usage example
 Given a polynomial ring in R with two variables, named *x* and *y*, that is *R[x,y]*.
 ```
