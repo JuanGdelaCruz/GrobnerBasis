@@ -1,0 +1,9 @@
+{
+  "solution": {
+    "path": "GrobnerBasis.sln",
+    "projects": [
+      "GrobnerBasis\\GrobnerBasis.csproj",
+      "Tester\\Tester.csproj"
+    ]
+  }
+}
